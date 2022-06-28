@@ -1,0 +1,21 @@
+---
+# vars file for oracledb
+#
+# Note: Storage and Memory are specified in MB
+
+OS_DISTRO: 'OracleLinux'
+MIN_OS_VER: 8.1
+MIN_MEMORY: 8192
+MIN_SWAP: 1024
+MIN_KERNEL_VER: 5.4.17
+MIN_TMP: 1024
+
+
+PRE_RPM: oracle-database-preinstall-19c
+ORACLE_GROUP: oinstall
+ORACLE_USER: oracle
+
+TMPDIR: /tmp
+ORACLE_BASE: /u01/app/oracle
+ORACLE_HOME: /u01/app/oracle/product/dbhome_19.0.0/
+ORACLE_SID: orcl

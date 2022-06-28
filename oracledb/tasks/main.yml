@@ -1,0 +1,44 @@
+---
+# tasks file for oracledb
+- name: Checking Hardware Requirements
+  block:
+  - name: Validate the OS and Hardware Check
+    assert:
+      that: 
+        - ansible_distribution == "{{ OS_DISTRO }}"
+        - ansible_distribution_version | float >= {{ MIN_OS_VER  }}
+        - ansible_kernel is version( '{{ MIN_KERNEL_VER }}' , '>=')
+        - ansible_memtotal_mb >= {{ MIN_MEMORY }}
+        - ansible_memory_mb.swap.total >= {{ MIN_SWAP }}
+  tags: hw_req
+
+- name: Server Configuration Requirements
+  block:
+  - name: Checking /tmp folder space
+    shell: df /tmp --output=avail | tail -1
+    register: tmp_space
+  
+  - name: Validate the minimum space in /tmp directory
+    assert:
+      that: 
+        - (tmp_space.stdout | int // 1000) >= {{ MIN_TMP }}
+
+  tags: sr_config
+
+- name: Installing Oracle DB pre-requisites
+  yum:
+    name: "{{ PRE_RPM }}"
+    state: present
+  tags: pre_req
+
+- name: Creating Oracle home Base Directory
+  file:
+    path: "{{ ORACLE_HOME }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ ORACLE_USER }}"
+    group: "{{ ORACLE_GROUP }}"
+    recurse: yes    
+  tags: base_dir
+
+
