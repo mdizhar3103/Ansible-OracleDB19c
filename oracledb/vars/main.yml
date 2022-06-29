@@ -9,8 +9,20 @@ MIN_MEMORY: 8192
 MIN_SWAP: 1024
 MIN_KERNEL_VER: 5.4.17
 MIN_TMP: 1024
+MIN_STORAGE: 10240
 
+DEPENDENCIES:
+  - binutils 
+  - gcc 
+  - glibc
+  - libaio
+  - libgcc 
+  - libstdc++ 
+  - make 
+  - sysstat 
+  - unixODBC
 
+DOWNLOAD_LINK: https://download.oracle.com/otn/linux/oracle19c/190000/LINUX.X64_193000_db_home.zip?AuthParam=1656515259_08a914ae1b5de894df3ee7412c024bfc
 PRE_RPM: oracle-database-preinstall-19c
 ORACLE_GROUP: oinstall
 ORACLE_USER: oracle
