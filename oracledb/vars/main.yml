@@ -3,6 +3,9 @@
 #
 # Note: Storage and Memory are specified in MB
 
+RESPONSE_FILE: 19c_swonly.rsp
+DIST_ID: OEL8
+
 OS_DISTRO: 'OracleLinux'
 MIN_OS_VER: 8.1
 MIN_MEMORY: 8192
@@ -27,7 +30,11 @@ PRE_RPM: oracle-database-preinstall-19c
 ORACLE_GROUP: oinstall
 ORACLE_USER: oracle
 
+# Use: EE for enterprise edition
+DB_EDITION: SE2
+DB_INSTALL_OPTION: INSTALL_DB_SWONLY
+DB_ROOT_SCRIPT: false
+
 TMPDIR: /tmp
 ORACLE_BASE: /u01/app/oracle
-ORACLE_HOME: /u01/app/oracle/product/dbhome_19.0.0/
-ORACLE_SID: orcl
+ORACLE_HOME: /u01/app/oracle/product/dbhome_19.0.0

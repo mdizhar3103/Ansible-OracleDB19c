@@ -50,10 +50,10 @@
   file:
     path: "{{ ORACLE_HOME }}"
     state: directory
-    mode: '0755'
+    mode: '0775'
     owner: "{{ ORACLE_USER }}"
     group: "{{ ORACLE_GROUP }}"
-    recurse: yes    
+    recurse: yes
   tags: base_dir
 
 
@@ -63,6 +63,60 @@
     get_url:
       url: "{{ DOWNLOAD_LINK }}"
       dest: "{{ ORACLE_HOME }}"
-  become_user: oracle
-  tags: download_db
-  ignore_errors: yes
+    tags: download_db
+    ignore_errors: yes
+
+  - name: Extract LINUX.X64_193000_db_home.zip into ORACLE_HOME
+    unarchive:
+      src: "{{ ORACLE_HOME }}/LINUX.X64_193000_db_home.zip"
+      dest: "{{ ORACLE_HOME }}"
+    tags: unzip_package
+    ignore_errors: yes
+
+  become: yes
+  become_user: "{{ ORACLE_USER }}"
+  tags: download_extract_db
+
+- name: Removing the zip file
+  file:
+    path: "{{ ORACLE_HOME }}/LINUX.X64_193000_db_home.zip"
+    state: absent
+  tags: remove_zip
+
+- name: Copying the response file to base location
+  template:
+    src: "templates/{{ RESPONSE_FILE }}.j2"
+    dest: "{{ ORACLE_HOME }}/install/response/{{ RESPONSE_FILE }}"
+    owner: "{{ ORACLE_USER }}"
+    group: "{{ ORACLE_GROUP }}"
+  tags: response_file
+  become_user: "{{ ORACLE_USER }}"
+  become: yes
+
+- name: Ensure the default Distro ID is Oracle linux 8
+  lineinfile:
+    path: "{{ ORACLE_HOME }}/cv/admin/cvu_config"
+    regexp: '^CV_ASSUME_DISTID'
+    insertafter: '^#CV_ASSUME_DISTID'
+    line: "CV_ASSUME_DISTID={{ DIST_ID }}"
+  tags: change_dist_id
+
+- name: Installting software and executing root.sh 
+  block:
+  - name: Install oracle 19c software
+    shell:
+      chdir: "{{ ORACLE_HOME }}"
+      cmd: "./runInstaller -silent -responseFile {{ ORACLE_HOME }}/install/response/{{ RESPONSE_FILE}} -noconfig -ignorePrereqFailure"
+    ignore_errors: yes
+    tags: install_swonly
+    become: yes
+    become_user: "{{ ORACLE_USER }}"
+
+  - name: Executing root.sh
+    shell:
+      chdir: "{{ ORACLE_HOME }}"
+      cmd: "./root.sh -silent"
+    ignore_errors: yes
+    become: yes
+    become_user: "{{ ORACLE_USER }}"
+    tags: exec_rootsh
