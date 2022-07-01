@@ -112,11 +112,31 @@
     become: yes
     become_user: "{{ ORACLE_USER }}"
 
+  - name: Executing orainstRoot.sh
+    shell:
+      chdir: "{{ ORACLE_BASE }}"
+      cmd: "../oraInventory/orainstRoot.sh"
+    ignore_errors: yes
+    tags: execute_orainsroot
+
   - name: Executing root.sh
     shell:
       chdir: "{{ ORACLE_HOME }}"
       cmd: "./root.sh -silent"
     ignore_errors: yes
-    become: yes
-    become_user: "{{ ORACLE_USER }}"
     tags: exec_rootsh
+
+- name: Updating bash_profile file for oracle path
+  blockinfile:
+    path: /home/oracle/.bash_profile
+    block: |
+      # oracle setting
+      export TMP={{ TMPDIR }}
+      export TMPDIR=$TMP
+      export ORACLE_BASE={{ ORACLE_BASE }}
+      export ORACLE_HOME={{ ORACLE_HOME }}
+      export PATH=/usr/sbin:$PATH
+      export PATH=$ORACLE_HOME/bin:$PATH
+      export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/lib:/usr/lib
+      export CLASSPATH=$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib
+  tags: upd_bash
