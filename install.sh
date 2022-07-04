@@ -35,13 +35,14 @@ ansible-playbook  playbook-oradb.yml
 echo ">>> Playbook execution completed"
 sleep 5
 
-echo "---"
-echo -e ">>> Note: Log in with oracle user and run the following commands to check and verify the installation :\nwhich sqlplus\nsqlplus -V\nsqlplus /nolog"
-echo "---"
-sleep 5
-
 echo ">>> Cleaning up the environment"
 sleep 3
 yum remove ansible -y
 rm -rf ../Ansible-OracleDB19c/
 echo ">>> Script Completed!"
+
+echo "---"
+echo -e ">>> Note: Log in with oracle user and run the following commands to check and verify the installation :\nwhich sqlplus\nsqlplus -V\nsqlplus /nolog"
+echo "---"
+sleep 5
+
