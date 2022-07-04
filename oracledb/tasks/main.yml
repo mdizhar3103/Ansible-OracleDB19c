@@ -12,6 +12,16 @@
         - ansible_memory_mb.swap.total >= {{ MIN_SWAP }}
   tags: hw_req
 
+- name: Installing Oracle DB pre-requisites
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - "{{ PRE_RPM }}"
+    - "{{ DEPENDENCIES }}"
+
+  tags: pre_req
+
 - name: Creating Oracle home Base Directory
   file:
     path: "{{ ORACLE_HOME }}"
@@ -44,16 +54,6 @@
         - (storage_space.stdout | int // 1000) >= {{ MIN_STORAGE }}
  
   tags: sr_config
-
-- name: Installing Oracle DB pre-requisites
-  yum:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - "{{ PRE_RPM }}"
-    - "{{ DEPENDENCIES }}"
-
-  tags: pre_req
 
 - name: Download Oracle19c
   block:
