@@ -12,6 +12,15 @@
         - ansible_memory_mb.swap.total >= {{ MIN_SWAP }}
   tags: hw_req
 
+- name: Creating Oracle home Base Directory
+  file:
+    path: "{{ ORACLE_HOME }}"
+    state: directory
+    mode: '0775'
+    owner: "{{ ORACLE_USER }}"
+    group: "{{ ORACLE_GROUP }}"
+  tags: base_dir
+
 - name: Server Configuration Requirements
   block:
   - name: Checking /tmp folder space
@@ -45,16 +54,6 @@
     - "{{ DEPENDENCIES }}"
 
   tags: pre_req
-
-- name: Creating Oracle home Base Directory
-  file:
-    path: "{{ ORACLE_HOME }}"
-    state: directory
-    mode: '0775'
-    owner: "{{ ORACLE_USER }}"
-    group: "{{ ORACLE_GROUP }}"
-  tags: base_dir
-
 
 - name: Download Oracle19c
   block:
