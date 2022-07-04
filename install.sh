@@ -43,4 +43,5 @@ sleep 5
 echo ">>> Cleaning up the environment"
 sleep 3
 yum remove ansible -y
+rm -rf ../Ansible-OracleDB19c/
 echo ">>> Script Completed!"
